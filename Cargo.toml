@@ -1,0 +1,30 @@
+[package]
+name = "complementary-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sdl2 = { version = "0.35.2", features = ["raw-window-handle"] }
+cgmath = { git = "https://github.com/rustgd/cgmath", rev = "d5e765d", features = ["bytemuck"] }
+env_logger = "0.9"
+log = "0.4"
+wgpu = "0.12"
+pollster = "0.2"
+raw-window-handle = "0.4.2"
+imgui-wgpu = "0.19.0"
+imgui = "0.8.2"
+complementary_macros = { path = "./complementary_macros" }
+rand_xoshiro = "0.6.0"
+rand = { version = "0.8.5", features = ["std"] }
+bytemuck = { version = "1.9.1", features = ["derive"] }
+num-traits = "0.2.15"
+num-derive = "0.3.3"
+
+# Pain
+[target.'cfg(target_os = "macos")'.dependencies.objc]
+version = "^0.2.7"
+
+[profile.release]
+lto = true
+panic = 'abort'
+strip = true
