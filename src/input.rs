@@ -43,15 +43,15 @@ impl Button {
         }
     }
 
-    pub fn pressed(self) -> bool {
+    pub fn pressed(&self) -> bool {
         self.pressed_ticks.is_some()
     }
 
-    pub fn pressed_first_frame(self) -> bool {
+    pub fn pressed_first_frame(&self) -> bool {
         matches!(self.pressed_ticks, Some(1))
     }
 
-    pub fn pressed_ticks(self) -> Option<i32> {
+    pub fn pressed_ticks(&self) -> Option<i32> {
         self.pressed_ticks
     }
 }
@@ -84,6 +84,10 @@ impl Input {
 
     pub fn set_button_released(&mut self, typ: ButtonType) {
         self.buttons[typ as usize].pressed_ticks = None;
+    }
+
+    pub fn get_button(&self, typ: ButtonType) -> &Button {
+        &self.buttons[typ as usize]
     }
 }
 

@@ -5,6 +5,7 @@ mod input;
 mod math;
 mod player;
 mod rendering;
+mod tilemap;
 mod window;
 
 use window::Window;

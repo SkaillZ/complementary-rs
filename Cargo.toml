@@ -27,4 +27,4 @@ version = "^0.2.7"
 [profile.release]
 lto = true
 panic = 'abort'
-strip = true
+#strip = true

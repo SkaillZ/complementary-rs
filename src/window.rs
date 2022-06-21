@@ -57,6 +57,14 @@ pub struct Window {
     imgui_platform: ImguiSdlPlatform,
 }
 
+pub struct DrawContext<'a> {
+    pub encoder: &'a mut wgpu::CommandEncoder,
+    pub output: &'a wgpu::TextureView,
+    pub queue: &'a wgpu::Queue,
+    pub window_width: u32,
+    pub window_height: u32,
+}
+
 impl Window {
     pub fn new() -> Result<Window, String> {
         let sdl_context = sdl2::init()?;
@@ -96,7 +104,7 @@ impl Window {
             Err(e) => return Err(e.to_string()),
         };
 
-        let mut game = Game::new(&device);
+        let game = Game::new(&device);
 
         let (width, height) = sdl_window.drawable_size();
         let surface_config = wgpu::SurfaceConfiguration {
@@ -274,7 +282,16 @@ impl Window {
                 .create_command_encoder(&wgpu::CommandEncoderDescriptor {
                     label: Some("command_encoder"),
                 });
-            self.game.draw(&mut encoder, &output);
+
+            let mut draw_context = DrawContext {
+                encoder: &mut encoder,
+                output: &output,
+                queue: &self.queue,
+                window_width: self.surface_config.width,
+                window_height: self.surface_config.height,
+            };
+
+            self.game.draw(&mut draw_context);
 
             {
                 // Imgui pass

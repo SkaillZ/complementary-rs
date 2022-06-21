@@ -3,14 +3,17 @@ use complementary_macros::ImGui;
 use wgpu::{
     include_wgsl,
     util::{BufferInitDescriptor, DeviceExt},
-    vertex_attr_array,
+    vertex_attr_array, BufferDescriptor,
 };
 
 use crate::{
     imgui_helpers::ImGui,
-    input::Input,
-    math::{FVec2, FVec3},
-    rendering::{create_pipeline_descriptor, Vertex},
+    input::{ButtonType, Input},
+    math::{FMat4, FVec2, FVec3},
+    rendering::{
+        create_pipeline_descriptor, create_vertex_buffer, DrawState, UniformBuffer, Vertex,
+    },
+    window::DrawContext,
 };
 
 pub type AbilityPair = (Ability, Ability);
@@ -28,9 +31,10 @@ pub struct Player {
     position: FVec2,
     velocity: FVec2,
     acceleration: FVec2,
-    // abilities: AbilityPair
+    abilities: AbilityPair,
+
     buffer: wgpu::Buffer,
-    bind_group: wgpu::BindGroup,
+    uniform_buffer: UniformBuffer<PlayerUniforms>,
     render_pipeline: wgpu::RenderPipeline,
 }
 
@@ -38,19 +42,10 @@ impl Player {
     pub const SIZE: FVec2 = FVec2::new(0.8, 0.8);
 
     pub fn new(device: &wgpu::Device) -> Self {
-        let shader = device.create_shader_module(&include_wgsl!("shaders/player.wgsl"));
+        let uniform_buffer = UniformBuffer::new(device, "player_uniforms");
 
-        let bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
-            entries: &[],
-            label: Some("player_bind_group_layout"),
-        });
-        let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
-            layout: &bind_group_layout,
-            entries: &[],
-            label: Some("player_bind_group"),
-        });
         let pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-            bind_group_layouts: &[&bind_group_layout],
+            bind_group_layouts: &[uniform_buffer.bind_group_layout()],
             label: Some("player_pipeline_layout"),
             push_constant_ranges: &[],
         });
@@ -64,15 +59,11 @@ impl Player {
             Vertex::new(Player::SIZE.x * 0.5, 0.0),
         ];
 
-        let buffer = device.create_buffer_init(&BufferInitDescriptor {
-            label: Some("player_vertex_buffer"),
-            contents: bytemuck::cast_slice(&vertices),
-            usage: wgpu::BufferUsages::VERTEX,
-        });
+        let buffer = create_vertex_buffer(device, Some("player_vertex_buffer"), &vertices);
 
         let render_pipeline = device.create_render_pipeline(&create_pipeline_descriptor(
             Some("player_pipeline"),
-            &shader,
+            &device.create_shader_module(&include_wgsl!("shaders/player.wgsl")),
             Some(&pipeline_layout),
             &[Vertex::layout()],
         ));
@@ -82,30 +73,63 @@ impl Player {
             velocity: FVec2::zero(),
             acceleration: FVec2::zero(),
 
+            abilities: (Ability::None, Ability::None),
             buffer,
-            bind_group,
+            uniform_buffer,
             render_pipeline,
         }
     }
 
-    pub fn tick(&mut self, input: &Input) {}
+    pub fn tick(&mut self, input: &Input) {
+        if input.get_button(ButtonType::Left).pressed() {
+            self.position.x -= 0.1;
+        }
+        if input.get_button(ButtonType::Right).pressed() {
+            self.position.x += 0.1;
+        }
+        if input.get_button(ButtonType::Up).pressed() {
+            self.position.y += 0.1;
+        }
+        if input.get_button(ButtonType::Down).pressed() {
+            self.position.y -= 0.1;
+        }
+    }
 
-    pub fn draw(&mut self, encoder: &mut wgpu::CommandEncoder, output: &wgpu::TextureView) {
-        let mut rpass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-            color_attachments: &[wgpu::RenderPassColorAttachment {
-                view: &output,
-                resolve_target: None,
-                ops: wgpu::Operations {
-                    load: wgpu::LoadOp::Clear(wgpu::Color::GREEN),
-                    store: true,
-                },
-            }],
-            depth_stencil_attachment: None,
-            label: None,
-        });
+    pub fn draw(&mut self, context: &mut DrawContext, state: &DrawState) {
+        let model_matrix =
+            FMat4::from_translation(FVec3::new(self.position.x, self.position.y, 0.0));
+
+        let uniforms = PlayerUniforms {
+            view_matrix: state.view_matrix,
+            model_matrix,
+        };
+        self.uniform_buffer
+            .write_with_queue(context.queue, uniforms);
+
+        let mut rpass = context
+            .encoder
+            .begin_render_pass(&wgpu::RenderPassDescriptor {
+                color_attachments: &[wgpu::RenderPassColorAttachment {
+                    view: &context.output,
+                    resolve_target: None,
+                    ops: wgpu::Operations {
+                        load: wgpu::LoadOp::Load,
+                        store: true,
+                    },
+                }],
+                depth_stencil_attachment: None,
+                label: None,
+            });
         rpass.set_pipeline(&self.render_pipeline);
         rpass.set_vertex_buffer(0, self.buffer.slice(..));
-        rpass.set_bind_group(0, &self.bind_group, &[]);
+        rpass.set_bind_group(0, &self.uniform_buffer.bind_group(), &[]);
         rpass.draw(0..6, 0..1);
     }
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
+struct PlayerUniforms {
+    view_matrix: FMat4,
+    model_matrix: FMat4,
 }
