@@ -19,6 +19,7 @@ rand = { version = "0.8.5", features = ["std"] }
 bytemuck = { version = "1.9.1", features = ["derive"] }
 num-traits = "0.2.15"
 num-derive = "0.3.3"
+lazy_static = "1"
 
 # Pain
 [target.'cfg(target_os = "macos")'.dependencies.objc]

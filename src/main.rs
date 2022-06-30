@@ -2,6 +2,7 @@ mod game;
 mod imgui_helpers;
 mod imgui_sdl2_support;
 mod input;
+mod level;
 mod math;
 mod player;
 mod rendering;

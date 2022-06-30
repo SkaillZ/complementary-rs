@@ -2,7 +2,7 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{self, spanned::Spanned, Data, DeriveInput, Fields};
 
-#[proc_macro_derive(ImGui)]
+#[proc_macro_derive(ImGui, attributes(gui_ignore))]
 pub fn derive_imgui(input: TokenStream) -> TokenStream {
     match syn::parse::<DeriveInput>(input).and_then(|input| impl_derive_imgui(input)) {
         Ok(result) => result,
@@ -14,16 +14,24 @@ fn impl_derive_imgui(ast: syn::DeriveInput) -> syn::Result<TokenStream> {
     let name = &ast.ident;
     let data = match &ast.data {
         Data::Struct(data) => data,
-        _ => return Err(syn::Error::new(ast.span(), "Expected struct"))
+        _ => return Err(syn::Error::new(ast.span(), "Expected struct")),
     };
 
     let fields = match &data.fields {
         Fields::Named(fields) => fields.named.iter().collect(),
-        Fields::Unnamed(fields) => return Err(syn::Error::new(fields.span(), "Structs with unnamed fields are not supported")),
+        Fields::Unnamed(fields) => {
+            return Err(syn::Error::new(
+                fields.span(),
+                "Structs with unnamed fields are not supported",
+            ))
+        }
         Fields::Unit => Vec::new(),
     };
 
-    let fields = fields.iter().filter_map(|field| {
+    let fields = fields.iter()
+        .filter(|field| !field.attrs.iter() // Ignore fields with the "gui_ignore" attribute
+            .any(|attr| { attr.path.segments.last().filter(|seg| seg.ident == "gui_ignore").is_some() }))
+        .filter_map(|field| {
         match &field.ident {
             Some(ident) => {
                 let ident_str = ident.to_string();
@@ -46,7 +54,7 @@ fn impl_derive_imgui(ast: syn::DeriveInput) -> syn::Result<TokenStream> {
             }
         }
     };
-    
+
     Ok(out.into())
 }
 

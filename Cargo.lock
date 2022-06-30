@@ -176,6 +176,7 @@ dependencies = [
  "env_logger",
  "imgui",
  "imgui-wgpu",
+ "lazy_static",
  "log",
  "num-derive",
  "num-traits",

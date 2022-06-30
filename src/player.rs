@@ -1,5 +1,5 @@
 use cgmath::Zero;
-use complementary_macros::ImGui;
+use complementary_macros::{ImGui};
 use wgpu::{
     include_wgsl,
     util::{BufferInitDescriptor, DeviceExt},
@@ -26,13 +26,20 @@ pub enum Ability {
     WallJump,
 }
 
-//#[derive(ImGui)]
+#[derive(ImGui)]
 pub struct Player {
     position: FVec2,
     velocity: FVec2,
     acceleration: FVec2,
+
+    #[gui_ignore]
     abilities: AbilityPair,
 
+    #[gui_ignore]
+    render_state: PlayerRenderState,
+}
+
+pub struct PlayerRenderState {
     buffer: wgpu::Buffer,
     uniform_buffer: UniformBuffer<PlayerUniforms>,
     render_pipeline: wgpu::RenderPipeline,
@@ -74,9 +81,11 @@ impl Player {
             acceleration: FVec2::zero(),
 
             abilities: (Ability::None, Ability::None),
-            buffer,
-            uniform_buffer,
-            render_pipeline,
+            render_state: PlayerRenderState {
+                buffer,
+                uniform_buffer,
+                render_pipeline,
+            },
         }
     }
 
@@ -103,7 +112,8 @@ impl Player {
             view_matrix: state.view_matrix,
             model_matrix,
         };
-        self.uniform_buffer
+        self.render_state
+            .uniform_buffer
             .write_with_queue(context.queue, uniforms);
 
         let mut rpass = context
@@ -120,9 +130,9 @@ impl Player {
                 depth_stencil_attachment: None,
                 label: None,
             });
-        rpass.set_pipeline(&self.render_pipeline);
-        rpass.set_vertex_buffer(0, self.buffer.slice(..));
-        rpass.set_bind_group(0, &self.uniform_buffer.bind_group(), &[]);
+        rpass.set_pipeline(&self.render_state.render_pipeline);
+        rpass.set_vertex_buffer(0, self.render_state.buffer.slice(..));
+        rpass.set_bind_group(0, &self.render_state.uniform_buffer.bind_group(), &[]);
         rpass.draw(0..6, 0..1);
     }
 }

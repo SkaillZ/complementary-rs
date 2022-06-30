@@ -104,7 +104,7 @@ impl Window {
             Err(e) => return Err(e.to_string()),
         };
 
-        let game = Game::new(&device);
+        let game = Game::new(&device).map_err(|e| e.to_string())?;
 
         let (width, height) = sdl_window.drawable_size();
         let surface_config = wgpu::SurfaceConfiguration {
@@ -267,7 +267,7 @@ impl Window {
             self.imgui_platform
                 .prepare_frame(&mut self.imgui, &self.sdl_window, &event_pump);
             let gui_frame = self.imgui.frame();
-            self.game.draw_gui(&gui_frame, &mut input);
+            self.game.draw_gui(&gui_frame, &mut input, &self.device);
 
             let frame_res = self.surface.get_current_texture();
             let frame = match frame_res {
