@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 sdl2 = { version = "0.35.2", features = ["raw-window-handle"] }
+# Pull `cgmath` from Git since support for `bytemuck` is not available on the crates.io release yet
 cgmath = { git = "https://github.com/rustgd/cgmath", rev = "d5e765d", features = ["bytemuck"] }
 env_logger = "0.9"
 log = "0.4"

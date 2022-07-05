@@ -2,8 +2,7 @@ struct PlayerUniforms {
     view_matrix: mat4x4<f32>;
     model_matrix: mat4x4<f32>;
 };
-[[group(0), binding(0)]]
-var<uniform> uniforms: PlayerUniforms;
+[[group(0), binding(0)]] var<uniform> uniforms: PlayerUniforms;
 
 struct VertexInput {
     [[location(0)]] position: vec2<f32>;

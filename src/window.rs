@@ -252,7 +252,7 @@ impl Window {
                 lag -= Game::TICK_DURATION;
 
                 input.tick();
-                self.game.tick(&input);
+                self.game.tick(&input, &self.device);
 
                 frame_tick_count += 1;
 

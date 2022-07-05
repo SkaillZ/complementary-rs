@@ -10,8 +10,8 @@ use bytemuck::Contiguous;
 use wgpu::include_wgsl;
 
 use crate::{
-    math::FMat4,
-    rendering::{self, DrawState, UniformBuffer, Vertex},
+    math::{Bounds, Color, Direction, FMat4, FVec2},
+    rendering::{self, ColoredVertex, DrawState, UniformBuffer},
     window::DrawContext,
 };
 
@@ -20,10 +20,75 @@ use crate::{
 pub enum Tile {
     Air,
     Solid,
+
+    SpikesLeft,
+    SpikesRight,
+    SpikesUp,
+    SpikesDown,
+
+    SpawnPoint,
+
+    GoalLeft,
+    GoalRight,
+    GoalUp,
+    GoalDown,
+
+    SpikeAllSides,
 }
 
 impl Tile {
     fn spawn(&self) {}
+
+    pub fn is_solid(&self) -> bool {
+        match self {
+            Tile::Air => false,
+            Tile::Solid => true,
+            Tile::SpikesLeft => true,
+            Tile::SpikesRight => true,
+            Tile::SpikesUp => true,
+            Tile::SpikesDown => true,
+            Tile::SpawnPoint => false,
+            Tile::GoalLeft => false,
+            Tile::GoalRight => false,
+            Tile::GoalUp => false,
+            Tile::GoalDown => false,
+            Tile::SpikeAllSides => false,
+        }
+    }
+
+    pub fn color(&self) -> Color {
+        match self {
+            Tile::Air => Color::WHITE,
+            Tile::Solid => Color::BLACK,
+            Tile::SpikesLeft => Color::RED,
+            Tile::SpikesRight => Color::RED,
+            Tile::SpikesUp => Color::RED,
+            Tile::SpikesDown => Color::RED,
+            Tile::SpawnPoint => Color::GREEN,
+            Tile::GoalLeft => Color::ORANGE,
+            Tile::GoalRight => Color::ORANGE,
+            Tile::GoalUp => Color::ORANGE,
+            Tile::GoalDown => Color::ORANGE,
+            Tile::SpikeAllSides => Color::RED,
+        }
+    }
+
+    pub fn direction(&self) -> Option<Direction> {
+        match self {
+            Tile::Air => None,
+            Tile::Solid => None,
+            Tile::SpikesLeft => Some(Direction::Left),
+            Tile::SpikesRight => Some(Direction::Right),
+            Tile::SpikesUp => Some(Direction::Up),
+            Tile::SpikesDown => Some(Direction::Down),
+            Tile::SpawnPoint => None,
+            Tile::GoalLeft => Some(Direction::Left),
+            Tile::GoalRight => Some(Direction::Right),
+            Tile::GoalUp => Some(Direction::Up),
+            Tile::GoalDown => Some(Direction::Down),
+            Tile::SpikeAllSides => None,
+        }
+    }
 }
 
 pub struct Tilemap {
@@ -82,12 +147,31 @@ impl Tilemap {
         tile.spawn();
     }
 
+    pub fn get_spawn_point(&self) -> Option<FVec2> {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                if matches!(self.get_tile(x, y), Tile::SpawnPoint) {
+                    return Some(FVec2::new(x as f32, y as f32));
+                }
+            }
+        }
+
+        None
+    }
+
     pub fn width(&self) -> i32 {
         self.width
     }
 
     pub fn height(&self) -> i32 {
         self.height
+    }
+
+    pub fn contains_bounds(&self, bounds: Bounds) -> bool {
+        bounds.min.x >= 0.0
+            || bounds.min.y >= 0.0
+            || bounds.max.x < self.width as f32
+            || bounds.max.y < self.height as f32
     }
 }
 
@@ -98,7 +182,7 @@ impl Default for Tilemap {
 }
 
 pub struct TilemapRenderer {
-    vertices: Vec<Vertex>,
+    vertex_count: usize,
     vertex_buffer: wgpu::Buffer,
     uniform_buffer: UniformBuffer<TilemapUniforms>,
     render_pipeline: wgpu::RenderPipeline,
@@ -123,7 +207,7 @@ impl TilemapRenderer {
             mapped_at_creation: true,
         });
 
-        let current_length = vertices.len() * std::mem::size_of::<Vertex>();
+        let current_length = vertices.len() * std::mem::size_of::<ColoredVertex>();
         vertex_buffer.slice(..).get_mapped_range_mut()[..current_length as usize]
             .copy_from_slice(bytemuck::cast_slice(&vertices));
         vertex_buffer.unmap();
@@ -133,38 +217,37 @@ impl TilemapRenderer {
                 Some("player_pipeline"),
                 &device.create_shader_module(&include_wgsl!("shaders/tilemap.wgsl")),
                 Some(&pipeline_layout),
-                &[Vertex::layout()],
+                &[ColoredVertex::layout()],
             ));
 
         TilemapRenderer {
-            vertices,
+            vertex_count: vertices.len(),
             vertex_buffer,
             uniform_buffer,
             render_pipeline,
         }
     }
 
-    fn get_tilemap_vertices(tilemap: &Tilemap) -> (Vec<Vertex>, usize) {
+    fn get_tilemap_vertices(tilemap: &Tilemap) -> (Vec<ColoredVertex>, usize) {
         // Each tile has six vertices max.
         let max_size = tilemap.width() as usize
             * tilemap.height() as usize
-            * std::mem::size_of::<Vertex>()
+            * std::mem::size_of::<ColoredVertex>()
             * 6;
         let mut vertices = Vec::with_capacity((max_size / 3) as usize);
 
         for y in 0..tilemap.height() {
             for x in 0..tilemap.width() {
                 let tile = tilemap.get_tile(x, y);
-                if !matches!(tile, Tile::Air) {
-                    let x = x as f32;
-                    let y = y as f32;
-                    vertices.push(Vertex::new(x + 0.0, y + 1.0));
-                    vertices.push(Vertex::new(x + 0.0, y + 0.0));
-                    vertices.push(Vertex::new(x + 1.0, y + 1.0));
-                    vertices.push(Vertex::new(x + 1.0, y + 1.0));
-                    vertices.push(Vertex::new(x + 0.0, y + 0.0));
-                    vertices.push(Vertex::new(x + 1.0, y + 0.0));
-                }
+                let x = x as f32;
+                let y = y as f32;
+                let color = tile.color();
+                vertices.push(ColoredVertex::new(FVec2::new(x + 0.0, y + 1.0), color));
+                vertices.push(ColoredVertex::new(FVec2::new(x + 0.0, y + 0.0), color));
+                vertices.push(ColoredVertex::new(FVec2::new(x + 1.0, y + 1.0), color));
+                vertices.push(ColoredVertex::new(FVec2::new(x + 1.0, y + 1.0), color));
+                vertices.push(ColoredVertex::new(FVec2::new(x + 0.0, y + 0.0), color));
+                vertices.push(ColoredVertex::new(FVec2::new(x + 1.0, y + 0.0), color));
             }
         }
 
@@ -185,7 +268,7 @@ impl TilemapRenderer {
                     view: &context.output,
                     resolve_target: None,
                     ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color::GREEN),
+                        load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
                         store: true,
                     },
                 }],
@@ -195,7 +278,7 @@ impl TilemapRenderer {
         rpass.set_pipeline(&self.render_pipeline);
         rpass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
         rpass.set_bind_group(0, &self.uniform_buffer.bind_group(), &[]);
-        rpass.draw(0..self.vertices.len() as u32, 0..1);
+        rpass.draw(0..self.vertex_count as u32, 0..1);
     }
 }
 

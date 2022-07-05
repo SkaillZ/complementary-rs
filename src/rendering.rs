@@ -4,7 +4,7 @@ use bytemuck::{Pod, Zeroable};
 use cgmath::{SquareMatrix, Transform};
 use wgpu::{util::DeviceExt, vertex_attr_array};
 
-use crate::math::{FMat4, FVec2, FVec3};
+use crate::math::{Color, FMat4, FVec2, FVec3};
 
 #[derive(Clone, Debug)]
 pub struct DrawState {
@@ -28,13 +28,20 @@ impl DrawState {
         let width_ratio = window_width / tilemap_width;
         let height_ratio = window_height / tilemap_height;
         let ratio = f32::min(width_ratio, height_ratio);
-        let scaled_width = tilemap_width * ratio;
-        let scaled_height = tilemap_height * ratio;
 
-        self.view_matrix = FMat4::from_translation(FVec3::new(-1.0, -1.0, 0.0))
+        let window_aspect = window_width / window_height;
+        let tilemap_aspect = tilemap_width / tilemap_height;
+
+        let (x_translation, y_translation) = if window_aspect < tilemap_aspect {
+            (1.0, window_aspect / 2.0)
+        } else {
+            (1.0, 1.0)
+        };
+
+        self.view_matrix = FMat4::from_translation(FVec3::new(-x_translation, y_translation, 0.0))
             * FMat4::from_nonuniform_scale(
                 (ratio / window_width) * 2.0,
-                (ratio / window_height) * 2.0,
+                (ratio / window_height) * -2.0,
                 1.0,
             );
     }
@@ -110,7 +117,7 @@ pub struct Vertex {
 
 impl Vertex {
     pub fn new(x: f32, y: f32) -> Self {
-        Vertex {
+        Self {
             position: FVec2::new(x, y),
         }
     }
@@ -119,9 +126,33 @@ impl Vertex {
 
     pub fn layout<'a>() -> wgpu::VertexBufferLayout<'a> {
         wgpu::VertexBufferLayout {
-            array_stride: std::mem::size_of::<Vertex>() as wgpu::BufferAddress,
+            array_stride: std::mem::size_of::<Self>() as wgpu::BufferAddress,
             step_mode: wgpu::VertexStepMode::Vertex,
-            attributes: Vertex::ATTR,
+            attributes: Self::ATTR,
+        }
+    }
+}
+
+#[derive(Copy, Clone, Pod, Zeroable)]
+#[repr(C)]
+pub struct ColoredVertex {
+    position: FVec2,
+    color: Color,
+}
+
+impl ColoredVertex {
+    pub fn new(position: FVec2, color: Color) -> Self {
+        Self { position, color }
+    }
+
+    const ATTR: &'static [wgpu::VertexAttribute] =
+        &vertex_attr_array![0 => Float32x2, 1 => Float32x4];
+
+    pub fn layout<'a>() -> wgpu::VertexBufferLayout<'a> {
+        wgpu::VertexBufferLayout {
+            array_stride: std::mem::size_of::<Self>() as wgpu::BufferAddress,
+            step_mode: wgpu::VertexStepMode::Vertex,
+            attributes: Self::ATTR,
         }
     }
 }
@@ -151,7 +182,7 @@ pub fn create_pipeline_descriptor<'a>(
         primitive: wgpu::PrimitiveState {
             topology: wgpu::PrimitiveTopology::TriangleList,
             strip_index_format: None,
-            front_face: wgpu::FrontFace::Ccw,
+            front_face: wgpu::FrontFace::Cw,
             cull_mode: Some(wgpu::Face::Back),
             unclipped_depth: false,
             polygon_mode: wgpu::PolygonMode::Fill,

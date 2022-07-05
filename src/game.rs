@@ -25,6 +25,11 @@ pub struct Game {
     tilemap_renderer: TilemapRenderer,
 }
 
+pub struct TickState<'a> {
+    pub input: &'a Input,
+    pub level: &'a mut Level,
+}
+
 impl Game {
     // Tick 100 times per second
     pub const TICK_DURATION: Duration = Duration::new(0, 10000000);
@@ -80,8 +85,18 @@ impl Game {
         self.player.draw_gui("Player", gui);
     }
 
-    pub fn tick(&mut self, input: &Input) {
-        self.player.tick(input);
+    pub fn tick(&mut self, input: &Input, device: &wgpu::Device) {
+        let mut state = TickState {
+            input,
+            level: &mut self.level,
+        };
+
+        self.player.tick(&mut state);
+
+        if self.player.dead() {
+            let pos = self.level.tilemap.get_spawn_point().unwrap_or(self.player.position());
+            self.player.reset(pos);
+        }
     }
 
     pub fn draw(&mut self, context: &mut DrawContext) {
@@ -99,6 +114,10 @@ impl Game {
     pub fn load_level(&mut self, device: &wgpu::Device, name: &str) -> Result<(), LevelLoadError> {
         self.level = Level::load(name)?;
         self.tilemap_renderer = TilemapRenderer::new(device, &self.level.tilemap);
+
+        if let Some(spawn_point) = self.level.tilemap.get_spawn_point() {
+            self.player.set_position(spawn_point);
+        }
         Ok(())
     }
 }
