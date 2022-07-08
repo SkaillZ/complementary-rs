@@ -28,19 +28,19 @@ pub struct Color {
 }
 
 impl Color {
-    pub const WHITE: Color = Color::from_int(0xFFFFFFFF);
-    pub const GRAY: Color = Color::from_int(0xFF808080);
-    pub const DARK_GRAY: Color = Color::from_int(0xFF555555);
-    pub const LIGHT_GRAY: Color = Color::from_int(0xFFC3C3C3);
-    pub const BLACK: Color = Color::from_int(0xFF000000);
-    pub const RED: Color = Color::from_int(0xFF0000FF);
-    pub const PINK: Color = Color::from_int(0xFFAFAFFF);
-    pub const ORANGE: Color = Color::from_int(0xFF00C8FF);
-    pub const YELLOW: Color = Color::from_int(0xFF00FFFF);
-    pub const GREEN: Color = Color::from_int(0xFF00FF00);
-    pub const MAGENTA: Color = Color::from_int(0xFFFF00FF);
-    pub const CYAN: Color = Color::from_int(0xFFFFFF00);
-    pub const BLUE: Color = Color::from_int(0xFFFF0000);
+    pub const WHITE: Color = Color::new_solid(1.0, 1.0, 1.0);
+    pub const GRAY: Color = Color::new_solid(0.5, 0.5, 0.5);
+    pub const DARK_GRAY: Color = Color::new_solid(0.33, 0.33, 0.33);
+    pub const LIGHT_GRAY: Color = Color::new_solid(0.76, 0.76, 0.76);
+    pub const BLACK: Color = Color::new_solid(0.0, 0.0, 0.0);
+    pub const RED: Color = Color::new_solid(1.0, 0.0, 0.0);
+    pub const PINK: Color = Color::new_solid(1.0, 0.69, 0.69);
+    pub const ORANGE: Color = Color::new_solid(1.0, 0.79, 0.0);
+    pub const YELLOW: Color = Color::new_solid(1.0, 1.0, 0.0);
+    pub const GREEN: Color = Color::new_solid(0.0, 1.0, 1.0);
+    pub const MAGENTA: Color = Color::new_solid(1.0, 0.0, 1.0);
+    pub const CYAN: Color = Color::new_solid(0.0, 1.0, 1.0);
+    pub const BLUE: Color = Color::new_solid(0.0, 0.0, 1.0);
 
     pub const fn new(r: f32, g: f32, b: f32, a: f32) -> Self {
         Self { r, g, b, a }
@@ -49,26 +49,21 @@ impl Color {
     pub const fn new_solid(r: f32, g: f32, b: f32) -> Self {
         Self { r, g, b, a: 1.0 }
     }
+}
 
-    // Const version of `from` trait impl (const impls are unstable, see https://github.com/rust-lang/rust/issues/67792)
-    pub const fn from_int(val: u32) -> Self {
+impl From<u32> for Color {
+    fn from(val: u32) -> Self {
         let r = val & 0xFF;
         let g = (val >> 8) & 0xFF;
         let b = (val >> 16) & 0xFF;
         let a = (val >> 24) & 0xFF;
 
         Self {
-            r: r as f32,
-            g: g as f32,
-            b: b as f32,
-            a: a as f32,
+            r: (r as f32 / 255.0),
+            g: (g as f32 / 255.0),
+            b: (b as f32 / 255.0),
+            a: (a as f32 / 255.0),
         }
-    }
-}
-
-impl From<u32> for Color {
-    fn from(val: u32) -> Self {
-        Self::from_int(val)
     }
 }
 

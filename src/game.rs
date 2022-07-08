@@ -1,25 +1,22 @@
 use std::time::{Duration, SystemTime};
 
 use crate::{
-    imgui_helpers::{ImGui, ImGuiSettings},
+    imgui_helpers::ImGui,
     input::{ButtonType, Input},
     level::{self, Level, LevelLoadError},
-    math::FVec3,
     player::Player,
     rendering::DrawState,
-    tilemap::{Tile, Tilemap, TilemapRenderer},
+    tilemap::TilemapRenderer,
     window::DrawContext,
 };
-use cgmath::Zero;
-use complementary_macros::ImGui;
 use log::error;
-use rand::Rng;
 use rand_xoshiro::{rand_core::SeedableRng, Xoshiro256PlusPlus};
 
 pub struct Game {
     rng: Xoshiro256PlusPlus,
     player: Player,
     level: Level,
+    world_type: WorldType,
 
     draw_state: DrawState,
     tilemap_renderer: TilemapRenderer,
@@ -28,6 +25,21 @@ pub struct Game {
 pub struct TickState<'a> {
     pub input: &'a Input,
     pub level: &'a mut Level,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum WorldType {
+    Light,
+    Dark,
+}
+
+impl WorldType {
+    pub fn inverse(self) -> Self {
+        match self {
+            WorldType::Light => WorldType::Dark,
+            WorldType::Dark => WorldType::Light,
+        }
+    }
 }
 
 impl Game {
@@ -47,6 +59,7 @@ impl Game {
         let mut game = Game {
             rng: Xoshiro256PlusPlus::seed_from_u64(seed),
             player: Player::new(device),
+            world_type: WorldType::Light,
 
             tilemap_renderer: TilemapRenderer::new(device, &level.tilemap),
             level,
@@ -70,6 +83,10 @@ impl Game {
             static ref ALL_LEVELS: Vec<String> = level::get_all_levels().expect("Failed to load levels");
         }
 
+        if gui.button("Change ability") {
+            self.player.set_ability(self.world_type, self.player.active_ability(self.world_type).cycle());
+        }
+
         if gui.collapsing_header("Levels", imgui::TreeNodeFlags::empty()) {
             gui.indent();
             for level_name in &*ALL_LEVELS {
@@ -85,16 +102,28 @@ impl Game {
         self.player.draw_gui("Player", gui);
     }
 
-    pub fn tick(&mut self, input: &Input, device: &wgpu::Device) {
+    pub fn tick(&mut self, input: &Input, _device: &wgpu::Device) {
         let mut state = TickState {
             input,
             level: &mut self.level,
         };
 
+        if input.get_button(ButtonType::Switch).pressed_first_frame()
+            || input
+                .get_button(ButtonType::SwitchAndAbility)
+                .pressed_first_frame()
+        {
+            self.world_type = self.world_type.inverse();
+        }
+
         self.player.tick(&mut state);
 
         if self.player.dead() {
-            let pos = self.level.tilemap.get_spawn_point().unwrap_or(self.player.position());
+            let pos = self
+                .level
+                .tilemap
+                .get_spawn_point()
+                .unwrap_or(self.player.position());
             self.player.reset(pos);
         }
     }
@@ -107,8 +136,9 @@ impl Game {
             self.level.tilemap.height() as f32,
         );
 
-        self.tilemap_renderer.draw(context, &self.draw_state);
-        self.player.draw(context, &self.draw_state);
+        self.tilemap_renderer
+            .draw(context, &self.draw_state, self.world_type);
+        self.player.draw(context, &self.draw_state, self.world_type);
     }
 
     pub fn load_level(&mut self, device: &wgpu::Device, name: &str) -> Result<(), LevelLoadError> {

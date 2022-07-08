@@ -1,3 +1,5 @@
+use std::fmt;
+
 use cgmath::{ElementWise, Zero};
 use complementary_macros::ImGui;
 use log::debug;
@@ -8,27 +10,17 @@ use wgpu::{
 };
 
 use crate::{
-    game::{Game, TickState},
+    game::{Game, TickState, WorldType},
     imgui_helpers::ImGui,
     input::{ButtonType, Input},
     level::Level,
-    math::{Bounds, Direction, FMat4, FVec2, FVec3},
+    math::{Bounds, Color, Direction, FMat4, FVec2, FVec3},
     rendering::{
         create_pipeline_descriptor, create_vertex_buffer, DrawState, UniformBuffer, Vertex,
     },
     tilemap::{Tile, Tilemap},
     window::DrawContext,
 };
-
-pub type AbilityPair = (Ability, Ability);
-
-pub enum Ability {
-    None,
-    DoubleJump,
-    Glider,
-    Dash,
-    WallJump,
-}
 
 #[derive(ImGui)]
 pub struct Player {
@@ -39,6 +31,16 @@ pub struct Player {
 
     /// Used to apply velocity from platforms etc.
     base_velocity: FVec2,
+
+    /// Jump buffering (see https://twitter.com/maddythorson/status/1238338575545978880)
+    current_jump_buffer_ticks: i32,
+    /// Coyote time (see https://twitter.com/MaddyThorson/status/1238338574220546049)
+    /// The value is `MAX_COYOTE_TIME` if we're grounded or value decreasing from `MAX_COYOTE_TIME`
+    /// to zero if we're in the air. Called `fakeGrounded` in C++ version
+    ground_coyote_time: i32,
+    /// Decreasing timer which applies a force each frame after a jump for `MAX_JUMP_TICKS` frames
+    /// as long as the player keeps holding the Jump button. This allows precise control over the jump height.
+    jump_ticks: i32,
 
     #[gui_ignore]
     abilities: AbilityPair,
@@ -61,6 +63,11 @@ impl Player {
     pub const GRAVITY: FVec2 = FVec2::new(0.0, 0.0275);
     pub const DRAG: FVec2 = FVec2::new(0.7, 0.9);
 
+    const INITIAL_JUMP_FORCE: FVec2 = FVec2::new(0.0, -0.3);
+    const CONTINUOUS_JUMP_FORCE: FVec2 = FVec2::new(0.0, -0.1);
+    const MAX_JUMP_TICKS: i32 = 40;
+    const MAX_JUMP_BUFFER_TICKS: i32 = 6;
+    const MAX_COYOTE_TIME: i32 = 5;
     const COLLISION_STEP: f32 = 0.0025;
 
     pub fn new(device: &wgpu::Device) -> Self {
@@ -96,8 +103,11 @@ impl Player {
             acceleration: FVec2::zero(),
             base_velocity: FVec2::zero(),
             dead: false,
+            jump_ticks: 0,
+            current_jump_buffer_ticks: 0,
+            ground_coyote_time: 0,
 
-            abilities: (Ability::None, Ability::None),
+            abilities: AbilityPair::default(),
             render_state: PlayerRenderState {
                 buffer,
                 uniform_buffer,
@@ -114,26 +124,69 @@ impl Player {
             * horizontal.signum();
         self.add_force(FVec2::new(right_force, 0.0));
 
+        let collision_faces = self.handle_directional_collision(&state.level);
+
         self.add_force(Player::GRAVITY);
+
+        if collision_faces[Direction::Down as usize] {
+            self.ground_coyote_time = Player::MAX_COYOTE_TIME;
+        }
+        if self.ground_coyote_time > 0 {
+            self.ground_coyote_time -= 1;
+        }
+
+        if state
+            .input
+            .get_button(ButtonType::Jump)
+            .pressed_first_frame()
+            && self.allowed_to_move()
+        {
+            self.current_jump_buffer_ticks = Player::MAX_JUMP_BUFFER_TICKS;
+        }
+        if self.current_jump_buffer_ticks > 0 {
+            self.current_jump_buffer_ticks -= 1;
+        }
+
+        if self.current_jump_buffer_ticks > 0 && self.ground_coyote_time > 0 {
+            self.add_force(Player::INITIAL_JUMP_FORCE);
+            self.jump_ticks = Player::MAX_JUMP_TICKS;
+            self.velocity.y = 0.0;
+            self.ground_coyote_time = 0;
+        }
+
+        if !state.input.get_button(ButtonType::Jump).pressed() && self.allowed_to_move() {
+            // Cancel the jump
+            self.jump_ticks = 0;
+        }
+
+        if self.jump_ticks > 0 {
+            // Add an additional force for some time as long as the player keeps holding the Jump button,
+            // scaled by jump duration
+            self.add_force(
+                Player::CONTINUOUS_JUMP_FORCE
+                    * (1.0 / 1.1_f32.powf((Player::MAX_JUMP_TICKS + 1 - self.jump_ticks) as f32)),
+            );
+            self.jump_ticks -= 1;
+        }
 
         self.velocity += self.acceleration;
         self.velocity.mul_assign_element_wise(Player::DRAG);
         self.velocity += (FVec2::new(1.0, 1.0) - Player::DRAG).mul_element_wise(self.base_velocity);
 
         self.move_until_collision(&state.level.tilemap);
-        self.handle_directional_collision(&state.level);
 
         self.acceleration = FVec2::zero();
         self.base_velocity = FVec2::zero();
     }
 
-    pub fn draw(&mut self, context: &mut DrawContext, state: &DrawState) {
+    pub fn draw(&mut self, context: &mut DrawContext, state: &DrawState, world_type: WorldType) {
         let model_matrix =
             FMat4::from_translation(FVec3::new(self.position.x, self.position.y, 0.0));
 
         let uniforms = PlayerUniforms {
             view_matrix: state.view_matrix,
             model_matrix,
+            color: self.active_ability(world_type).color(),
         };
         self.render_state
             .uniform_buffer
@@ -240,7 +293,7 @@ impl Player {
                 collisions_by_direction[i] = true;
             }
 
-            for y in bounds.min.y as i32..=bounds.max.y as i32 {
+            'outer: for y in bounds.min.y as i32..=bounds.max.y as i32 {
                 for x in bounds.min.x as i32..=bounds.max.x as i32 {
                     let tile = level.tilemap.get_tile(x, y);
                     if tile.is_solid() {
@@ -257,11 +310,15 @@ impl Player {
                                 Some(tile_dir) => {
                                     if *direction == tile_dir.inverse() {
                                         // Only kill if the direction of the spike is the inverse to the one we're testing
-                                        self.kill()
+                                        self.kill();
+                                        break 'outer;
                                     }
                                 }
                                 // The tile spike goes in all directions; always kill
-                                None => self.kill(),
+                                None => {
+                                    self.kill();
+                                    break 'outer;
+                                }
                             }
                         }
                     }
@@ -293,6 +350,26 @@ impl Player {
     pub fn dead(&self) -> bool {
         self.dead
     }
+
+    pub fn allowed_to_move(&self) -> bool {
+        true
+    }
+
+    pub fn active_ability(&self, world_type: WorldType) -> Ability {
+        if world_type == WorldType::Light {
+            self.abilities.0
+        } else {
+            self.abilities.1
+        }
+    }
+
+    pub fn set_ability(&mut self, world_type: WorldType, ability: Ability) {
+        if world_type == WorldType::Light {
+            self.abilities.0 = ability;
+        } else {
+            self.abilities.1 = ability;
+        }
+    }
 }
 
 #[repr(C)]
@@ -300,4 +377,64 @@ impl Player {
 struct PlayerUniforms {
     view_matrix: FMat4,
     model_matrix: FMat4,
+    color: Color,
+}
+
+pub type AbilityPair = (Ability, Ability);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Ability {
+    None,
+    DoubleJump,
+    Glider,
+    Dash,
+    WallJump,
+}
+
+impl Default for Ability {
+    fn default() -> Self {
+        Ability::None
+    }
+}
+
+impl Ability {
+    pub fn color(self) -> Color {
+        match self {
+            Ability::None => Color::GRAY,
+            Ability::DoubleJump => Color::new_solid(0.75, 0.0, 0.75),
+            Ability::Glider => Color::new_solid(0.25, 1.0, 0.25),
+            Ability::Dash => Color::new_solid(1.0, 0.65, 0.0),
+            Ability::WallJump => Color::new_solid(0.0, 0.35, 1.0),
+        }
+    }
+
+    pub fn name(self) -> &'static str {
+        match self {
+            Ability::None => "None",
+            Ability::DoubleJump => "Double Jump",
+            Ability::Glider => "Glider",
+            Ability::Dash => "Dash",
+            Ability::WallJump => "Wall Jump",
+        }
+    }
+
+    pub fn tutorial_text(self) -> Option<String> {
+        unimplemented!();
+    }
+
+    pub fn cycle(self) -> Self {
+        match self {
+            Ability::None => Ability::DoubleJump,
+            Ability::DoubleJump => Ability::Glider,
+            Ability::Glider => Ability::Dash,
+            Ability::Dash => Ability::WallJump,
+            Ability::WallJump => Ability::None,
+        }
+    }
+}
+
+impl fmt::Display for Ability {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.name())
+    }
 }
