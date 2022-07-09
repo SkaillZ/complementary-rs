@@ -53,6 +53,23 @@ impl Tile {
             Tile::GoalRight => false,
             Tile::GoalUp => false,
             Tile::GoalDown => false,
+            Tile::SpikeAllSides => true,
+        }
+    }
+
+    pub fn is_wall(&self) -> bool {
+        match self {
+            Tile::Air => false,
+            Tile::Solid => true,
+            Tile::SpikesLeft => false,
+            Tile::SpikesRight => false,
+            Tile::SpikesUp => false,
+            Tile::SpikesDown => false,
+            Tile::SpawnPoint => false,
+            Tile::GoalLeft => false,
+            Tile::GoalRight => false,
+            Tile::GoalUp => false,
+            Tile::GoalDown => false,
             Tile::SpikeAllSides => false,
         }
     }
@@ -344,7 +361,11 @@ impl TilemapRenderer {
         up: bool,
         down: bool,
     ) {
-        TilemapRenderer::append_rectangle(vertices, Bounds::new(pos, pos + FVec2::new(1.0, 1.0)), Color::WHITE);
+        TilemapRenderer::append_rectangle(
+            vertices,
+            Bounds::new(pos, pos + FVec2::new(1.0, 1.0)),
+            Color::WHITE,
+        );
         TilemapRenderer::append_spike(vertices, pos, left, right, up, down, tile.color());
     }
 
@@ -361,9 +382,18 @@ impl TilemapRenderer {
         // Can't use closures instead of macros here since both functions would require a mutable reference to `vertices`
         macro_rules! triangle {
             ($x0:expr, $y0:expr, $x1:expr, $y1: expr, $x2:expr, $y2: expr) => {
-                vertices.push(ColoredVertex::new(FVec2::new(pos.x + $x0, pos.y + $y0), color));
-                vertices.push(ColoredVertex::new(FVec2::new(pos.x + $x1, pos.y + $y1), color));
-                vertices.push(ColoredVertex::new(FVec2::new(pos.x + $x2, pos.y + $y2), color));
+                vertices.push(ColoredVertex::new(
+                    FVec2::new(pos.x + $x0, pos.y + $y0),
+                    color,
+                ));
+                vertices.push(ColoredVertex::new(
+                    FVec2::new(pos.x + $x1, pos.y + $y1),
+                    color,
+                ));
+                vertices.push(ColoredVertex::new(
+                    FVec2::new(pos.x + $x2, pos.y + $y2),
+                    color,
+                ));
             };
         }
 

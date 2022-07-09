@@ -89,6 +89,18 @@ impl Input {
     pub fn get_button(&self, typ: ButtonType) -> &Button {
         &self.buttons[typ as usize]
     }
+
+    pub fn ability_button_pressed_first_frame(&self) -> bool {
+        self.get_button(ButtonType::Ability).pressed_first_frame()
+            || self
+                .get_button(ButtonType::SwitchAndAbility)
+                .pressed_first_frame()
+    }
+
+    pub fn ability_button_pressed(&self) -> bool {
+        self.get_button(ButtonType::Ability).pressed()
+            || self.get_button(ButtonType::SwitchAndAbility).pressed()
+    }
 }
 
 impl ImGui for Input {

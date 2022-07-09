@@ -25,6 +25,7 @@ pub struct Game {
 pub struct TickState<'a> {
     pub input: &'a Input,
     pub level: &'a mut Level,
+    pub world_type: WorldType,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -84,7 +85,10 @@ impl Game {
         }
 
         if gui.button("Change ability") {
-            self.player.set_ability(self.world_type, self.player.active_ability(self.world_type).cycle());
+            self.player.set_ability(
+                self.world_type,
+                self.player.active_ability(self.world_type).cycle(),
+            );
         }
 
         if gui.collapsing_header("Levels", imgui::TreeNodeFlags::empty()) {
@@ -103,11 +107,6 @@ impl Game {
     }
 
     pub fn tick(&mut self, input: &Input, _device: &wgpu::Device) {
-        let mut state = TickState {
-            input,
-            level: &mut self.level,
-        };
-
         if input.get_button(ButtonType::Switch).pressed_first_frame()
             || input
                 .get_button(ButtonType::SwitchAndAbility)
@@ -115,6 +114,12 @@ impl Game {
         {
             self.world_type = self.world_type.inverse();
         }
+
+        let mut state = TickState {
+            input,
+            level: &mut self.level,
+            world_type: self.world_type,
+        };
 
         self.player.tick(&mut state);
 

@@ -7,7 +7,7 @@ use crate::math::{FVec2, FVec3};
 use cgmath::num_traits::ToPrimitive;
 use imgui::FontSource;
 use imgui_wgpu::{Renderer as ImguiRenderer, RendererConfig};
-use log::{info, warn, debug};
+use log::{debug, info, warn};
 use sdl2::event::{Event, WindowEvent};
 use sdl2::keyboard::Keycode;
 use sdl2::video::Window as SdlWindow;
@@ -196,7 +196,7 @@ impl Window {
                             input.set_button_pressed(ButtonType::Confirm);
                         }
                         Keycode::RShift => input.set_button_pressed(ButtonType::SwitchAndAbility),
-                        Keycode::RCtrl | Keycode::RAlt => {
+                        Keycode::RCtrl | Keycode::RAlt | Keycode::LCtrl => {
                             input.set_button_pressed(ButtonType::Ability)
                         }
                         Keycode::Left | Keycode::A => input.set_button_pressed(ButtonType::Left),
@@ -222,7 +222,7 @@ impl Window {
                             input.set_button_released(ButtonType::Confirm);
                         }
                         Keycode::RShift => input.set_button_released(ButtonType::SwitchAndAbility),
-                        Keycode::RCtrl | Keycode::RAlt => {
+                        Keycode::RCtrl | Keycode::RAlt | Keycode::LCtrl => {
                             input.set_button_released(ButtonType::Ability)
                         }
                         Keycode::Left | Keycode::A => input.set_button_released(ButtonType::Left),
