@@ -1,0 +1,194 @@
+[
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 16.0,
+      "y": 0.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 39.0,
+      "y": 5.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 12.0,
+      "y": 6.0
+    },
+    "data": {
+      "size": {
+        "x": 3.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Light"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 37.0,
+      "y": 6.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 4.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "world_type": "Light"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 19.0,
+      "y": 8.0
+    },
+    "data": {
+      "size": {
+        "x": 3.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 34.0,
+      "y": 9.0
+    },
+    "data": {
+      "size": {
+        "x": 3.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Light"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 39.0,
+      "y": 13.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 26.0,
+      "y": 25.0
+    },
+    "data": {
+      "size": {
+        "x": 6.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Light"
+    }
+  }
+]

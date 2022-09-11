@@ -1,0 +1,104 @@
+[
+  {
+    "type": "Key",
+    "position": {
+      "x": 9.0,
+      "y": 8.0
+    },
+    "data": {
+      "group": 0
+    }
+  },
+  {
+    "type": "Door",
+    "position": {
+      "x": 27.0,
+      "y": 15.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 1.0
+      },
+      "group": 0
+    }
+  },
+  {
+    "type": "Key",
+    "position": {
+      "x": 28.0,
+      "y": 17.0
+    },
+    "data": {
+      "group": 0
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 25.0,
+      "y": 20.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "None",
+        "None"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 25.0,
+      "y": 21.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "None",
+        "None"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 9.0,
+      "y": 22.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 10.0,
+      "y": 22.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  }
+]

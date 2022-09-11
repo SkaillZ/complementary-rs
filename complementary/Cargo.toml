@@ -1,0 +1,31 @@
+[package]
+name = "complementary"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sdl2 = { version = "0.35.2", features = ["raw-window-handle", "mixer"] }
+# Pull `cgmath` from Git since support for `bytemuck` is not available on the crates.io release yet
+cgmath = { git = "https://github.com/rustgd/cgmath", rev = "d5e765d", features = ["bytemuck", "serde"] }
+env_logger = "0.9"
+log = "0.4"
+wgpu = "0.12"
+pollster = "0.2"
+raw-window-handle = "0.4.2"
+imgui-wgpu = "0.19.0"
+imgui = "0.8.2"
+complementary_macros = { path = "../complementary_macros" }
+rand_xoshiro = "0.6.0"
+rand = { version = "0.8.5", features = ["std"] }
+bytemuck = { version = "1.9.1", features = ["derive"] }
+num-traits = "0.2.15"
+num-derive = "0.3.3"
+lazy_static = "1"
+thiserror = "1.0.32"
+serde_json = "1.0.83"
+serde = { version = "1.0.144", features = ["derive"] }
+paste = "1.0.8"
+
+# Pain
+[target.'cfg(target_os = "macos")'.dependencies.objc]
+version = "^0.2.7"

@@ -1,0 +1,282 @@
+[
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 36.0,
+      "y": 4.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 5.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 44.0,
+      "y": 4.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 5.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 17.0,
+      "y": 7.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 2.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 25.0,
+      "y": 7.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 2.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 36.0,
+      "y": 10.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 5.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 44.0,
+      "y": 10.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 5.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 12.0,
+      "y": 11.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 2.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "Wind",
+    "position": {
+      "x": 12.0,
+      "y": 15.0
+    },
+    "data": {
+      "size": {
+        "x": 35.0,
+        "y": 11.0
+      },
+      "force": {
+        "x": -1.4901161193847656e-8,
+        "y": -0.03999993950128555
+      }
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 26.0,
+      "y": 16.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 27.0,
+      "y": 16.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 6.0,
+      "y": 19.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 6.0,
+      "y": 20.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 26.0,
+      "y": 20.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 5.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 6.0,
+      "y": 21.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 6.0,
+      "y": 22.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 23.0,
+      "y": 23.0
+    },
+    "data": {
+      "size": {
+        "x": 3.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": -5.0,
+        "y": 0.0
+      },
+      "speed": 0.03999999538064003,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  }
+]

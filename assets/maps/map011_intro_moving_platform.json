@@ -1,0 +1,144 @@
+[
+  {
+    "type": "Platform",
+    "position": {
+      "x": 10.0,
+      "y": 10.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 0.0,
+        "y": -4.0
+      },
+      "speed": 0.04999999329447746,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": null
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 18.0,
+      "y": 10.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 0.0,
+        "y": -5.0
+      },
+      "speed": 0.030000001192092896,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": null
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 42.0,
+      "y": 11.0
+    },
+    "data": {
+      "size": {
+        "x": 8.0,
+        "y": 6.0
+      },
+      "goal": {
+        "x": -6.0,
+        "y": 0.0
+      },
+      "speed": 0.060000352561473846,
+      "spiky": [
+        true,
+        false,
+        false,
+        false
+      ],
+      "world_type": null
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 29.0,
+      "y": 17.0
+    },
+    "data": {
+      "size": {
+        "x": 3.0,
+        "y": 2.0
+      },
+      "goal": {
+        "x": 0.0,
+        "y": 6.0
+      },
+      "speed": 0.030000146478414536,
+      "spiky": [
+        false,
+        false,
+        false,
+        true
+      ],
+      "world_type": null
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 39.0,
+      "y": 17.0
+    },
+    "data": {
+      "size": {
+        "x": 3.0,
+        "y": 2.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 21.0,
+      "y": 24.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": -8.0,
+        "y": 0.0
+      },
+      "speed": 0.029950056225061417,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": null
+    }
+  }
+]

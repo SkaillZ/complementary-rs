@@ -1,0 +1,195 @@
+[
+  {
+    "type": "Wind",
+    "position": {
+      "x": 23.0,
+      "y": 3.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 10.0
+      },
+      "force": {
+        "x": 0.00009999633766710758,
+        "y": -0.04499998316168785
+      }
+    }
+  },
+  {
+    "type": "Wind",
+    "position": {
+      "x": 10.0,
+      "y": 4.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 21.0
+      },
+      "force": {
+        "x": -3.4924596548080444e-9,
+        "y": -0.040899988263845444
+      }
+    }
+  },
+  {
+    "type": "Wind",
+    "position": {
+      "x": 17.0,
+      "y": 5.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 8.0
+      },
+      "force": {
+        "x": -0.057799965143203735,
+        "y": 0.0
+      }
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 16.0,
+      "y": 6.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 7.0
+      },
+      "abilities": [
+        "None",
+        "None"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 27.0,
+      "y": 9.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 8.0
+      },
+      "abilities": [
+        "None",
+        "None"
+      ]
+    }
+  },
+  {
+    "type": "Tutorial",
+    "position": {
+      "x": 1.0,
+      "y": 11.0
+    },
+    "data": {
+      "tutorial_type": "Glider",
+      "size": {
+        "x": 4.0,
+        "y": 14.0
+      },
+      "instant": false
+    }
+  },
+  {
+    "type": "Wind",
+    "position": {
+      "x": 1.0,
+      "y": 13.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 12.0
+      },
+      "force": {
+        "x": 0.00019999744836241007,
+        "y": -0.04689958691596985
+      }
+    }
+  },
+  {
+    "type": "Wind",
+    "position": {
+      "x": 17.0,
+      "y": 13.0
+    },
+    "data": {
+      "size": {
+        "x": 9.0,
+        "y": 4.0
+      },
+      "force": {
+        "x": 0.04109998419880867,
+        "y": 0.0
+      }
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 1.0,
+      "y": 14.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Light"
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 1.0,
+      "y": 25.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 12.0,
+      "y": 25.0
+    },
+    "data": {
+      "size": {
+        "x": 10.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "None",
+        "None"
+      ]
+    }
+  }
+]

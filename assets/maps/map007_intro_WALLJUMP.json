@@ -1,0 +1,101 @@
+[
+  {
+    "type": "Tutorial",
+    "position": {
+      "x": 10.0,
+      "y": 6.0
+    },
+    "data": {
+      "tutorial_type": "WallJump",
+      "size": {
+        "x": 5.0,
+        "y": 8.0
+      },
+      "instant": false
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 23.0,
+      "y": 8.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 24.0,
+      "y": 8.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 12.0,
+      "y": 11.0
+    },
+    "data": {
+      "size": {
+        "x": 6.0,
+        "y": 3.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 23.0,
+      "y": 13.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  }
+]

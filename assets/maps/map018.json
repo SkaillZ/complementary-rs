@@ -1,0 +1,170 @@
+[
+  {
+    "type": "Door",
+    "position": {
+      "x": 19.0,
+      "y": 4.0
+    },
+    "data": {
+      "size": {
+        "x": 10.0,
+        "y": 1.0
+      },
+      "group": 0
+    }
+  },
+  {
+    "type": "Key",
+    "position": {
+      "x": 45.0,
+      "y": 6.0
+    },
+    "data": {
+      "group": 0
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 18.0,
+      "y": 10.0
+    },
+    "data": {
+      "size": {
+        "x": 12.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 18.0,
+      "y": 14.0
+    },
+    "data": {
+      "size": {
+        "x": 12.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Light"
+    }
+  },
+  {
+    "type": "Key",
+    "position": {
+      "x": 14.0,
+      "y": 16.0
+    },
+    "data": {
+      "group": 0
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 18.0,
+      "y": 18.0
+    },
+    "data": {
+      "size": {
+        "x": 12.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 17.0,
+      "y": 19.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 2.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 30.0,
+      "y": 19.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 2.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 1.0,
+      "y": 20.0
+    },
+    "data": {
+      "size": {
+        "x": 3.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  }
+]

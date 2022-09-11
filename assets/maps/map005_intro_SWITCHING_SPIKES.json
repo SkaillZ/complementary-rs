@@ -1,0 +1,77 @@
+[
+  {
+    "type": "Platform",
+    "position": {
+      "x": 5.0,
+      "y": 13.0
+    },
+    "data": {
+      "size": {
+        "x": 7.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "world_type": "Light"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 12.0,
+      "y": 13.0
+    },
+    "data": {
+      "size": {
+        "x": 7.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 19.0,
+      "y": 13.0
+    },
+    "data": {
+      "size": {
+        "x": 7.0,
+        "y": 1.0
+      },
+      "goal": {
+        "x": 3.0,
+        "y": 3.0
+      },
+      "speed": 0.0,
+      "spiky": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "world_type": "Light"
+    }
+  }
+]

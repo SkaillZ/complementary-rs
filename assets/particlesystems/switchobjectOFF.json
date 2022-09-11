@@ -1,0 +1,59 @@
+{
+  "type": "ParticleSystem",
+  "position": {
+    "x": 9.0,
+    "y": 10.5
+  },
+  "data": {
+    "duration": 0,
+    "type": "Square",
+    "min_emission_interval": 1,
+    "max_emission_interval": 1,
+    "min_emission_rate": 1,
+    "max_emission_rate": 1,
+    "min_start_velocity": {
+      "x": -0.10000000149011612,
+      "y": -0.10000000149011612
+    },
+    "max_start_velocity": {
+      "x": 0.10000000149011612,
+      "y": 0.10000000149011612
+    },
+    "gravity": 0.0,
+    "max_life_time": 40,
+    "start_color": {
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0,
+      "a": 0.0
+    },
+    "end_color": {
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0,
+      "a": 255.0
+    },
+    "start_size": 0.15000000596046448,
+    "end_size": 0.0,
+    "follow_player": false,
+    "play_on_spawn": true,
+    "destroy_on_end": false,
+    "enable_collision": false,
+    "clamp_position_in_bounds": true,
+    "emission_type": {
+      "BoxEdgeSpiky": {
+        "x": 2.0,
+        "y": 1.0
+      }
+    },
+    "attract_speed": 0.0,
+    "layer": "BehindTilemap",
+    "auto_invert_color": false,
+    "out_of_box_lifetime_loss": 0,
+    "clamp_box_size": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "symmetrical": false
+  }
+}

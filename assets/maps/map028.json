@@ -1,0 +1,221 @@
+[
+  {
+    "type": "Platform",
+    "position": {
+      "x": 24.0,
+      "y": 1.0
+    },
+    "data": {
+      "size": {
+        "x": 4.0,
+        "y": 16.0
+      },
+      "goal": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "speed": 0.02500000037252903,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Light"
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 31.0,
+      "y": 3.0
+    },
+    "data": {
+      "size": {
+        "x": 15.0,
+        "y": 14.0
+      },
+      "goal": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "speed": 0.02500000037252903,
+      "spiky": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "world_type": "Light"
+    }
+  },
+  {
+    "type": "Wind",
+    "position": {
+      "x": 40.0,
+      "y": 4.0
+    },
+    "data": {
+      "size": {
+        "x": 6.0,
+        "y": 11.0
+      },
+      "force": {
+        "x": 0.0,
+        "y": -0.029999997466802597
+      }
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 27.0,
+      "y": 6.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 2.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 31.0,
+      "y": 6.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 2.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 8.0,
+      "y": 8.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "DoubleJump",
+        "Glider"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 12.0,
+      "y": 8.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 1.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 4.0,
+      "y": 11.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 2.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 32.0,
+      "y": 20.0
+    },
+    "data": {
+      "size": {
+        "x": 3.0,
+        "y": 2.0
+      },
+      "goal": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "speed": 0.02500000037252903,
+      "spiky": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "world_type": "Dark"
+    }
+  },
+  {
+    "type": "AbilityBlock",
+    "position": {
+      "x": 44.0,
+      "y": 20.0
+    },
+    "data": {
+      "size": {
+        "x": 1.0,
+        "y": 3.0
+      },
+      "abilities": [
+        "WallJump",
+        "Dash"
+      ]
+    }
+  },
+  {
+    "type": "Platform",
+    "position": {
+      "x": 17.0,
+      "y": 21.0
+    },
+    "data": {
+      "size": {
+        "x": 2.0,
+        "y": 2.0
+      },
+      "goal": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "speed": 0.02500000037252903,
+      "spiky": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "world_type": "Dark"
+    }
+  }
+]
