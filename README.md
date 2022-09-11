@@ -1,6 +1,6 @@
 # complementary-rs
 
-Rust rewrite of [Complementary](https://github.com/complementaries/complementary).
+Rust rewrite of [Complementary](https://github.com/complementaries/complementary). The original game and the assets used were made by Annabelle Nissl, Kajetan Hammerle and Rene Buchmayer.
 
 ## Running the game
 
